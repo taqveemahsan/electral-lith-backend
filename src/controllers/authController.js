@@ -62,6 +62,41 @@ exports.getBannerImage = async (req, res) => {
   }
 };
 
+exports.addContactUs = async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+      return ResponseHandler.error(res, 400, 'Missing required fields');
+    }
+
+    const contact = await userService.addContactUs({ name, email, message });
+    ResponseHandler.success(res, 201, messages.CONTACT_US_ADDED, contact);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.getContactUsList = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query; // Default pagination
+    const contacts = await userService.getContactUsList({ page: parseInt(page), limit: parseInt(limit) });
+    ResponseHandler.success(res, 200, messages.CONTACT_US_LIST, contacts);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.getContactUsById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const contact = await userService.getContactUsById(id);
+    ResponseHandler.success(res, 200, messages.CONTACT_US_DETAILS, contact);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
 // exports.createAccount = async (req, res) => {
 //   try {
 //     const hashedPassword = await bcrypt.hash(req.body.password, 10);

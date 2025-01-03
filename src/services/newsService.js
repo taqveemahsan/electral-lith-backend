@@ -71,7 +71,7 @@ class NewsService {
 
     const users = await elasticsearchContext.search(News, {
       match_all: {}
-    }, { createdAt: { order: "desc" } });
+    }, { createdAt: { order: "desc" } }, from, limit);
 
     return users; //await elasticsearchContext.search(News, query);
   }
