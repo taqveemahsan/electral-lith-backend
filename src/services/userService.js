@@ -49,15 +49,44 @@ class UserService {
     return updatedBanner;
   }
 
-  // Method to get the current banner image
-  async getBannerImage(id) {
-    const bannerData = await elasticsearchContext.findByIdByIndexName(Banner, id);
-    if (!bannerData) {
-      throw new Error('Banner not found');
-    }
+  // // Method to get the current banner image
+  // async getBannerImage(id) {
+    
+  //   const results = await elasticsearchContext.search(Banner, {
+  //         match_all: {}
+  //       }, { createdAt: { order: "desc" } }, 0, 20);
+    
+  //   if (results.hits.total.value === 0) {
+  //     throw new Error('No banners found');
+  //   }
+  
+  //   const latestBanner = results.hits.hits[0]._source; // Extract the latest banner
+  //   return latestBanner.mediaUrl; // Return only the media URL
+   
+  // }
 
-    return bannerData.mediaUrl;
+  // Method to get the current banner image
+async getBannerImage() {
+  try {
+    const results = await elasticsearchContext.search(
+      Banner,
+      { match_all: {} },
+      { createdAt: { order: "desc" } },
+      0,
+      1 
+    );
+
+    if (results.length > 0) {
+      return results[0].mediaUrl;
+    } else {
+      throw new Error("Banner not found");
+    }
+  } catch (error) {
+    return "Banner not found";
   }
+}
+
+
 
   // Add a new contact us entry
   async addContactUs(data) {
