@@ -17,4 +17,13 @@ router.get('/contactus/list', authController.getContactUsList);
 // Get banner image
 router.get('/contactus/:id', authController.getContactUsById);
 
+// Update banner image
+router.post('/jobs/add', authController.addJob);
+
+// Get banner image
+router.get('/jobs/list', authController.getJobList);
+
+// Get banner image
+router.get('/jobs/:id', authController.getJobById);
+
 module.exports = router;

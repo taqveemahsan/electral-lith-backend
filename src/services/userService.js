@@ -3,6 +3,7 @@ const elasticsearchContext = require('../../context/elasticsearchContext');
 const User = require('../models/user');
 const Banner = require('../models/banner');
 const contactUs = require('../models/contactUs')
+const Job = require('../models/job');
 const path = require('path');
 
 class UserService {
@@ -87,6 +88,37 @@ class UserService {
       throw new Error('Contact entry not found');
     }
     return contact;
+  }
+
+  // Add a new job
+  async addJob(data) {
+    const job = new Job(data);
+    await elasticsearchContext.create(job); // Add to Elasticsearch
+    await elasticsearchContext.saveChanges(); // Save changes
+    return job;
+  }
+
+  // Get all jobs with pagination
+  async getJobList({ page, limit }) {
+    const from = (page - 1) * limit;
+    const query = {
+      from,
+      size: limit,
+    };
+
+    const results = await elasticsearchContext.search(Job, {
+      match_all: {}
+    }, { createdAt: { order: "desc" } }, from, limit);
+    return results; // Return formatted list
+  }
+
+  // Get job by ID
+  async getJobById(id) {
+    const job = await elasticsearchContext.findByIdByIndexName(Job, id);
+    if (!job) {
+      throw new Error('Job not found');
+    }
+    return job;
   }
 
 }

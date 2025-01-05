@@ -97,6 +97,41 @@ exports.getContactUsById = async (req, res) => {
   }
 };
 
+exports.addJob = async (req, res) => {
+  try {
+    const { title, description, location, type, category, postedBy } = req.body;
+
+    if (!title || !description || !location || !type || !category || !postedBy) {
+      return ResponseHandler.error(res, 400, 'Missing required fields');
+    }
+
+    const job = await userService.addJob({ title, description, location, type, category, postedBy });
+    ResponseHandler.success(res, 201, messages.JOB_ADDED, job);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.getJobList = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query; // Default pagination
+    const jobs = await userService.getJobList({ page: parseInt(page), limit: parseInt(limit) });
+    ResponseHandler.success(res, 200, messages.JOB_LIST, jobs);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.getJobById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = await userService.getJobById(id);
+    ResponseHandler.success(res, 200, messages.JOB_DETAILS, job);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
 // exports.createAccount = async (req, res) => {
 //   try {
 //     const hashedPassword = await bcrypt.hash(req.body.password, 10);
