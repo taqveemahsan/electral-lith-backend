@@ -2,7 +2,9 @@
 const elasticsearchContext = require('../../context/elasticsearchContext');
 const User = require('../models/user');
 const Banner = require('../models/banner');
-const contactUs = require('../models/contactUs')
+const SecondBanner = require('../models/banner');
+const ThirdBanner = require('../models/banner');
+const contactUs = require('../models/contactUs');
 const Job = require('../models/job');
 const path = require('path');
 
@@ -49,44 +51,126 @@ class UserService {
     return updatedBanner;
   }
 
-  // // Method to get the current banner image
-  // async getBannerImage(id) {
-    
-  //   const results = await elasticsearchContext.search(Banner, {
-  //         match_all: {}
-  //       }, { createdAt: { order: "desc" } }, 0, 20);
-    
-  //   if (results.hits.total.value === 0) {
-  //     throw new Error('No banners found');
-  //   }
-  
-  //   const latestBanner = results.hits.hits[0]._source; // Extract the latest banner
-  //   return latestBanner.mediaUrl; // Return only the media URL
-   
-  // }
+  // Method to get the current banner image
+  async getBannerImage() {
+    try {
+      const results = await elasticsearchContext.search(
+        Banner,
+        { match_all: {} },
+        { createdAt: { order: "desc" } },
+        0,
+        1
+      );
+
+      if (results.length > 0) {
+        return results[0].mediaUrl;
+      } else {
+        throw new Error("Banner not found");
+      }
+    } catch (error) {
+      return "Banner not found";
+    }
+  }
+
+  // Method to update the banner image
+  async updateSecondBannerImage(id, file) {
+    const bannerData = await elasticsearchContext.findByIdByIndexName(SecondBanner, id);
+    // if (!bannerData) {
+    //   throw new Error('Banner not found');
+    // }
+
+    let mediaUrl = null;
+    if (file) {
+      // Save the media path to the image file
+      mediaUrl = path.join('/uploads/SecondBanners/', file.filename);
+    }
+
+    // Prepare the updated banner data
+    const updatedBannerData = {
+      ...bannerData,
+      mediaUrl,
+    };
+
+    // Create a new Banner instance with updated data
+    const updatedBanner = new SecondBanner(updatedBannerData);
+
+    // Update the banner in Elasticsearch
+    await elasticsearchContext.create(updatedBanner);
+    await elasticsearchContext.saveChanges();
+
+    return updatedBanner;
+  }
 
   // Method to get the current banner image
-async getBannerImage() {
-  try {
-    const results = await elasticsearchContext.search(
-      Banner,
-      { match_all: {} },
-      { createdAt: { order: "desc" } },
-      0,
-      1 
-    );
+  async getSecondBannerBannerImage() {
+    try {
+      const results = await elasticsearchContext.search(
+        SecondBanner,
+        { match_all: {} },
+        { createdAt: { order: "desc" } },
+        0,
+        1
+      );
 
-    if (results.length > 0) {
-      return results[0].mediaUrl;
-    } else {
-      throw new Error("Banner not found");
+      if (results.length > 0) {
+        return results[0].mediaUrl;
+      } else {
+        throw new Error("Banner not found");
+      }
+    } catch (error) {
+      return "Banner not found";
     }
-  } catch (error) {
-    return "Banner not found";
   }
-}
 
+  // Method to update the banner image
+  async updateThirdBannerImage(id, file) {
+    const bannerData = await elasticsearchContext.findByIdByIndexName(ThirdBanner, id);
+    // if (!bannerData) {
+    //   throw new Error('Banner not found');
+    // }
 
+    let mediaUrl = null;
+    if (file) {
+      // Save the media path to the image file
+      mediaUrl = path.join('/uploads/thirdBanners/', file.filename);
+    }
+
+    // Prepare the updated banner data
+    const updatedBannerData = {
+      ...bannerData,
+      mediaUrl,
+    };
+
+    // Create a new Banner instance with updated data
+    const updatedBanner = new ThirdBanner(updatedBannerData);
+
+    // Update the banner in Elasticsearch
+    await elasticsearchContext.create(updatedBanner);
+    await elasticsearchContext.saveChanges();
+
+    return updatedBanner;
+  }
+
+  // Method to get the current banner image
+  async getThirdBannerImage() {
+    try {
+      const results = await elasticsearchContext.search(
+        ThirdBanner,
+        { match_all: {} },
+        { createdAt: { order: "desc" } },
+        0,
+        1
+      );
+
+      if (results.length > 0) {
+        return results[0].mediaUrl;
+      } else {
+        throw new Error("Banner not found");
+      }
+    } catch (error) {
+      return "Banner not found";
+    }
+  }
 
   // Add a new contact us entry
   async addContactUs(data) {
@@ -105,8 +189,8 @@ async getBannerImage() {
     };
 
     const results = await elasticsearchContext.search(contactUs, {
-          match_all: {}
-        }, { createdAt: { order: "desc" } }, from, limit);
+      match_all: {}
+    }, { createdAt: { order: "desc" } }, from, limit);
     return results; // Return formatted list
   }
 
@@ -153,17 +237,3 @@ async getBannerImage() {
 }
 
 module.exports = new UserService();
-  // // Get paginated list of news
-  // async getNewsList({ page, limit }) {
-  //   const from = (page - 1) * limit; // Calculate the starting point for pagination
-  //   const query = {
-  //     from,
-  //     size: limit,
-  //   };
-
-  //   const users = await elasticsearchContext.search(News, {
-  //     match_all: {}
-  //   }, { createdAt: { order: "desc" } }, from, limit);
-
-  //   return users; //await elasticsearchContext.search(News, query);
-  // }

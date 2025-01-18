@@ -58,37 +58,6 @@ exports.addNews = async (req, res) => {
 };
 
 /**
- * Add a new news item.
- */
-// exports.addNews = async (req, res) => {
-//   upload(req, res, async (err) => {
-//     if (err) {
-//       return ResponseHandler.error(res, 400, 'File upload error', err.message);
-//     }
-
-//     try {
-//       const { title, content, author, category } = req.body;
-
-//       // Validate required fields
-//       if (!title || !content || !author) {
-//         return ResponseHandler.error(res, 400, 'Missing required fields');
-//       }
-
-//       // Handle media file if provided
-//       if (req.file) {
-//         mediaType = req.file.mimetype.startsWith('image/') ? 'image' : 'video';
-//         mediaPath = req.file ? path.join('/uploads/news/', req.file.filename) : null; // Relative path for media
-//       }
-//       // Add the news
-//       await newsService.addNews({ title, content, author, category, mediaType, mediaPath});
-//       ResponseHandler.success(res, 201, messages.NEWS_ADDED);
-//     } catch (error) {
-//       ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
-//     }
-//   });
-// };
-
-/**
  * Edit an existing news item.
  */
 exports.editNews = async (req, res) => {
