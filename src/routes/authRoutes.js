@@ -44,4 +44,34 @@ router.get('/jobs/list', authController.getJobList);
 // Get banner image
 router.get('/jobs/:id', authController.getJobById);
 
+// Add FAQ
+router.post('/faq', authController.addFAQ); 
+
+// Get FAQ list
+router.get('/faq', authController.getFAQList); 
+
+// Get FAQ by ID
+router.get('/faq/:id', authController.getFAQById);
+
+// Update FAQ
+router.put('/faq/:id', authController.updateFAQ); 
+
+// Delete FAQ
+router.delete('/faq/:id', authController.deleteFAQ); 
+
+// Add glossary term
+router.post('/glossary', authController.addGlossaryTerm); 
+
+// Get glossary list
+router.get('/glossary', authController.getGlossaryList); 
+
+// Get glossary by ID
+router.get('/glossary/:id', authController.getGlossaryById); 
+
+// Update glossary term
+router.put('/glossary/:id', authController.updateGlossaryTerm); 
+
+// Delete glossary term
+router.delete('/glossary/:id', authController.deleteGlossaryTerm); 
+
 module.exports = router;

@@ -36,6 +36,13 @@ class ElasticsearchContext {
     return body._source ? new entityClass(body._source) : null;
   }
 
+  async update(entityClass, id, entity) {
+    const index = await this.getIndexName({ constructor: { name: entityClass.name } });
+    // Push the update action and document to the bulk operations
+    this.bulkOperations.push({ update: { _index: index, _id: id } });
+    this.bulkOperations.push({ doc: entity });
+  }
+
   async findByIdByIndexName(entityClass, id) {
     try {
       const index = await this.getIndexName({ constructor: { name: entityClass.name } });

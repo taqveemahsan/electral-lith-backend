@@ -229,3 +229,117 @@ exports.loginAccount = async (req, res) => {
     ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
   }
 };
+
+exports.addFAQ = async (req, res) => {
+  try {
+    const { question, answer } = req.body;
+
+    if (!question || !answer) {
+      return ResponseHandler.error(res, 400, 'Missing required fields');
+    }
+
+    const faq = await userService.updateFAQ({ question, answer });
+    ResponseHandler.success(res, 201, messages.FAQ_ADDED, faq);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.getFAQList = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query; // Default pagination
+    const faqs = await userService.getFAQList({ page: parseInt(page), limit: parseInt(limit) });
+    ResponseHandler.success(res, 200, messages.FAQ_LIST, faqs);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.getFAQById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const faq = await userService.getFAQById(id);
+    ResponseHandler.success(res, 200, messages.FAQ_DETAILS, faq);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.updateFAQ = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { question, answer } = req.body;
+
+    const updatedFAQ = await userService.updateFAQ(id, { question, answer });
+    ResponseHandler.success(res, 200, messages.FAQ_UPDATED, updatedFAQ);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.deleteFAQ = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await userService.deleteFAQ(id);
+    ResponseHandler.success(res, 200, messages.FAQ_DELETED, result);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.addGlossaryTerm = async (req, res) => {
+  try {
+    const { term, definition } = req.body;
+
+    if (!term || !definition) {
+      return ResponseHandler.error(res, 400, 'Missing required fields');
+    }
+
+    const glossary = await userService.addGlossaryTerm({ term, definition });
+    ResponseHandler.success(res, 201, messages.GLOSSARY_ADDED, glossary);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.getGlossaryList = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query; // Default pagination
+    const glossary = await userService.getGlossaryList({ page: parseInt(page), limit: parseInt(limit) });
+    ResponseHandler.success(res, 200, messages.GLOSSARY_LIST, glossary);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.getGlossaryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const glossary = await userService.getGlossaryById(id);
+    ResponseHandler.success(res, 200, messages.GLOSSARY_DETAILS, glossary);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.updateGlossaryTerm = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { term, definition } = req.body;
+
+    const updatedGlossary = await userService.updateGlossaryTerm(id, { term, definition });
+    ResponseHandler.success(res, 200, messages.GLOSSARY_UPDATED, updatedGlossary);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};
+
+exports.deleteGlossaryTerm = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await userService.deleteGlossaryTerm(id);
+    ResponseHandler.success(res, 200, messages.GLOSSARY_DELETED, result);
+  } catch (error) {
+    ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
+  }
+};

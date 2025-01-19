@@ -29,27 +29,36 @@ class NewsService {
     return news;
   }
 
-  /**
-   * Updates an existing news item in Elasticsearch.
-   * @param {string} id - The ID of the news item to update.
-   * @param {Object} updatedData - The updated data.
-   * @returns {Object} - The updated news item.
-   * @throws Will throw an error if the news item is not found.
-   */
-  async updateNews(id, updatedData) {
-    const existingNews = await this.findNewsById(id);
+  // /**
+  //  * Updates an existing news item in Elasticsearch.
+  //  * @param {string} id - The ID of the news item to update.
+  //  * @param {Object} updatedData - The updated data.
+  //  * @returns {Object} - The updated news item.
+  //  * @throws Will throw an error if the news item is not found.
+  //  */
+  // async updateNews(id, updatedData) {
+  //   const existingNews = await this.findNewsById(id);
 
-    if (!existingNews) {
-      throw new Error('News not found');
-    }
+  //   if (!existingNews) {
+  //     throw new Error('News not found');
+  //   }
 
-    // Merge updated data with existing news
-    const updatedNews = { ...existingNews, ...updatedData };
+  //   // Merge updated data with existing news
+  //   const updatedNews = { ...existingNews, ...updatedData };
 
-    // Update in Elasticsearch
-    await elasticsearchContext.create(updatedNews);
-    await elasticsearchContext.saveChanges();
-    return updatedNews;
+  //   // Update in Elasticsearch
+  //   await elasticsearchContext.create(updatedNews);
+  //   await elasticsearchContext.saveChanges();
+  //   return updatedNews;
+  // }
+
+  // Update an existing report
+  async updateNews(id, data) {
+    const report = await this.findNewsById(id); // Check if the report exists
+    Object.assign(report, data); // Merge new data into the report object
+    await elasticsearchContext.update(News, id ,report); // Update in Elasticsearch
+    await elasticsearchContext.saveChanges(); // Save changes
+    return report;
   }
 
   /**

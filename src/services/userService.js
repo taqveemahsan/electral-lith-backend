@@ -7,6 +7,8 @@ const ThirdBanner = require('../models/banner');
 const contactUs = require('../models/contactUs');
 const Job = require('../models/job');
 const path = require('path');
+const FAQ = require('../models/FAQ');
+const Glossary = require('../models/glossary');
 
 class UserService {
   async createUser(data) {
@@ -232,6 +234,122 @@ class UserService {
       throw new Error('Job not found');
     }
     return job;
+  }
+
+  async addFAQ(data) {
+    const faq = new FAQ(data);
+    await elasticsearchContext.create(faq); // Add to Elasticsearch
+    await elasticsearchContext.saveChanges(); // Save changes
+    return faq;
+  }
+
+  async getFAQList({ page, limit }) {
+    const from = (page - 1) * limit;
+    const query = {
+      from,
+      size: limit,
+    };
+
+    const results = await elasticsearchContext.search(
+      FAQ,
+      { match_all: {} },
+      { createdAt: { order: 'desc' } },
+      from,
+      limit
+    );
+    return results;
+  }
+
+  async getFAQById(id) {
+    const faq = await elasticsearchContext.findByIdByIndexName(FAQ, id);
+    if (!faq) {
+      throw new Error('FAQ not found');
+    }
+    return faq;
+  }
+
+  async updateFAQ(id, data) {
+    const faq = await this.getFAQById(id);
+    if (!faq) {
+      throw new Error('FAQ not found');
+    }
+
+    // Update properties
+    faq.question = data.question || faq.question;
+    faq.answer = data.answer || faq.answer;
+
+    await elasticsearchContext.update(FAQ, id, faq);
+    await elasticsearchContext.saveChanges();
+    return faq;
+  }
+
+  async deleteFAQ(id) {
+    const faq = await this.getFAQById(id);
+    if (!faq) {
+      throw new Error('FAQ not found');
+    }
+
+    await elasticsearchContext.delete(FAQ, id);
+    await elasticsearchContext.saveChanges();
+    return { message: 'FAQ deleted successfully' };
+  }
+
+  async addGlossaryTerm(data) {
+    const glossary = new Glossary(data);
+    await elasticsearchContext.create(glossary); // Add to Elasticsearch
+    await elasticsearchContext.saveChanges(); // Save changes
+    return glossary;
+  }
+
+  async getGlossaryList({ page, limit }) {
+    const from = (page - 1) * limit;
+    const query = {
+      from,
+      size: limit,
+    };
+
+    const results = await elasticsearchContext.search(
+      Glossary,
+      { match_all: {} },
+      { createdAt: { order: 'desc' } },
+      from,
+      limit
+    );
+    return results;
+  }
+
+  async getGlossaryById(id) {
+    const glossary = await elasticsearchContext.findByIdByIndexName(Glossary, id);
+    if (!glossary) {
+      throw new Error('Glossary term not found');
+    }
+    return glossary;
+  }
+
+  async updateGlossaryTerm(id, data) {
+    const glossary = await this.getGlossaryById(id);
+    if (!glossary) {
+      throw new Error('Glossary term not found');
+    }
+
+    // Update properties
+    glossary.term = data.term || glossary.term;
+    glossary.definition = data.definition || glossary.definition;
+
+    await elasticsearchContext.update(Glossary, id, glossary);
+    await elasticsearchContext.saveChanges();
+    return glossary;
+  }
+
+  async deleteGlossaryTerm(id) {
+    const glossary = await this.getGlossaryById(id);
+    if (!glossary) {
+      throw new Error('Glossary term not found');
+    }
+
+    await elasticsearchContext.delete(Glossary, id);
+    await elasticsearchContext.saveChanges();
+    return { message: 'Glossary term deleted successfully' };
   }
 
 }
