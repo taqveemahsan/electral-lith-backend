@@ -238,7 +238,7 @@ exports.addFAQ = async (req, res) => {
       return ResponseHandler.error(res, 400, 'Missing required fields');
     }
 
-    const faq = await userService.updateFAQ({ question, answer });
+    const faq = await userService.addFAQ({ question, answer });
     ResponseHandler.success(res, 201, messages.FAQ_ADDED, faq);
   } catch (error) {
     ResponseHandler.error(res, 500, messages.ERROR_WHILE_ACTION_PERFORMING, error.message);
