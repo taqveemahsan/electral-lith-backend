@@ -6,7 +6,7 @@ const router = express.Router();
 router.post('/user/signup', authController.createAccount);
 
 // Login Account
-router.get('/user/login', authController.loginAccount);
+router.post('/user/login', authController.loginAccount);
 
 // Update banner image
 router.post('/banner/:id', authController.updateBannerImage);
