@@ -119,6 +119,3 @@ Feel free to contribute by opening a pull request! For major changes, please ope
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## Contact
-
-For questions or issues, please reach out to [zohaib@ammag.tech](mailto:zohaib@ammag.tech).
